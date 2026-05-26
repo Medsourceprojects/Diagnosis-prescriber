@@ -1,4 +1,4 @@
-const CACHE_NAME = "diagnosis-prescriber-v5";
+const CACHE_NAME = "diagnosis-prescriber-v6";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -12,6 +12,9 @@ const APP_SHELL = [
   "/icons/apple-touch-icon.png",
   "/favicon.ico",
   "/favicon.png",
+  "/apple-touch-icon.png",
+  "/apple-touch-icon-precomposed.png",
+  "/.well-known/assetlinks.json",
 ];
 
 self.addEventListener("install", (event) => {

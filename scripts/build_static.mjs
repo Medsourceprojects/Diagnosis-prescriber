@@ -65,12 +65,26 @@ async function assertNoSecretsInDist(dir) {
 await rm(dist, { recursive: true, force: true });
 await mkdir(path.join(dist, "data"), { recursive: true });
 await mkdir(path.join(dist, "icons"), { recursive: true });
+await mkdir(path.join(dist, ".well-known"), { recursive: true });
 
-for (const file of ["index.html", "styles.css", "app.js", "README.md", "manifest.json", "service-worker.js", "favicon.ico", "favicon.png"]) {
+for (const file of [
+  "index.html",
+  "styles.css",
+  "app.js",
+  "README.md",
+  "manifest.json",
+  "service-worker.js",
+  "favicon.ico",
+  "favicon.png",
+  "apple-touch-icon.png",
+  "apple-touch-icon-precomposed.png",
+]) {
   if (existsSync(path.join(root, file))) {
     await cp(path.join(root, file), path.join(dist, file));
   }
 }
+
+await cp(path.join(root, ".well-known", "assetlinks.json"), path.join(dist, ".well-known", "assetlinks.json"));
 
 for (const file of ["icon-192.png", "icon-512.png", "apple-touch-icon.png"]) {
   await cp(path.join(root, "icons", file), path.join(dist, "icons", file));

@@ -1,4 +1,4 @@
-const CACHE_NAME = "diagnosis-prescriber-v4";
+const CACHE_NAME = "diagnosis-prescriber-v5";
 const APP_SHELL = [
   "/",
   "/index.html",
@@ -10,6 +10,7 @@ const APP_SHELL = [
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/apple-touch-icon.png",
+  "/favicon.ico",
   "/favicon.png",
 ];
 

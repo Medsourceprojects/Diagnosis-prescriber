@@ -4,14 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Diagnosis Prescriber</title>
+    <link rel="icon" href="/favicon.ico?v=5" sizes="any" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=5" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png?v=5" />
     <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="theme-color" content="#2563eb" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Dx Prescriber" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -91,6 +92,96 @@
       </section>
     </main>
 
+    <section class="rating-section" aria-labelledby="ratingTitle">
+      <div class="rating-card">
+        <div class="rating-intro">
+          <div>
+            <h2 id="ratingTitle">Rate this app</h2>
+            <p class="rating-stars-display" aria-hidden="true">★★★★★</p>
+          </div>
+          <p class="rating-helper">Private feedback goes to the publisher/admin only. Individual messages are not shown publicly.</p>
+        </div>
+
+        <form id="ratingFeedbackForm" name="rating-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
+          <input type="hidden" name="form-name" value="rating-feedback" />
+          <p hidden>
+            <label>Don’t fill this out: <input name="bot-field" /></label>
+          </p>
+
+          <fieldset class="rating-stars" aria-label="Star rating">
+            <legend>Star rating</legend>
+            <label class="star-option">
+              <input type="radio" name="rating" value="1" required />
+              <span>★</span>
+            </label>
+            <label class="star-option">
+              <input type="radio" name="rating" value="2" />
+              <span>★</span>
+            </label>
+            <label class="star-option">
+              <input type="radio" name="rating" value="3" />
+              <span>★</span>
+            </label>
+            <label class="star-option">
+              <input type="radio" name="rating" value="4" />
+              <span>★</span>
+            </label>
+            <label class="star-option">
+              <input type="radio" name="rating" value="5" />
+              <span>★</span>
+            </label>
+          </fieldset>
+
+          <div class="rating-grid">
+            <label>
+              <span>Profession</span>
+              <select name="profession">
+                <option value="">Optional</option>
+                <option>Doctor</option>
+                <option>Intern</option>
+                <option>PG / Resident</option>
+                <option>Medical Student</option>
+                <option>Pharmacist</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>
+              <span>Feedback type</span>
+              <select name="feedback_type">
+                <option value="">Optional</option>
+                <option>Correction needed</option>
+                <option>Missing diagnosis</option>
+                <option>Dose/treatment issue</option>
+                <option>Feature request</option>
+                <option>App bug</option>
+                <option>General feedback</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="full-field">
+            <span>Message</span>
+            <textarea name="message" rows="3" placeholder="Write optional feedback. Do not include patient-identifiable information."></textarea>
+          </label>
+
+          <label class="full-field">
+            <span>Email</span>
+            <input name="email" type="email" placeholder="Email for follow-up, optional" autocomplete="email" />
+          </label>
+
+          <label class="consent-field">
+            <input name="consent" type="checkbox" value="yes" required />
+            <span>I agree to share this feedback for app improvement and confirm I am not submitting patient-identifiable information.</span>
+          </label>
+
+          <div class="rating-actions">
+            <button type="submit">Submit Rating</button>
+            <p id="ratingStatus" class="rating-status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <footer class="site-footer">
       <div class="footer-grid">
         <section>
@@ -110,6 +201,7 @@
         <button id="installAppBtn" class="install-btn hidden" type="button">Install App</button>
         <p>Install app: Android/Chrome/Edge: use Install App or browser menu. iPhone/iPad: open in Safari → Share → Add to Home Screen.</p>
       </div>
+      <p class="privacy-note">Feedback is used only to improve the app. Do not submit patient-identifiable information.</p>
       <p class="copyright">© 2026 Medsourceprojects. All rights reserved.</p>
     </footer>
 

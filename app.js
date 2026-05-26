@@ -41,6 +41,9 @@ const el = {
   copy: document.querySelector("#copyBtn"),
   print: document.querySelector("#printBtn"),
   install: document.querySelector("#installAppBtn"),
+  ratingForm: document.querySelector("#ratingFeedbackForm"),
+  ratingStatus: document.querySelector("#ratingStatus"),
+  ratingStars: Array.from(document.querySelectorAll(".star-option")),
   printArea: document.querySelector("#printArea"),
   toast: document.querySelector("#toast"),
 };
@@ -244,6 +247,53 @@ function showToast(message) {
   window.setTimeout(() => el.toast.classList.remove("show"), 1800);
 }
 
+function updateRatingStars(value) {
+  const rating = Number(value || 0);
+  for (const star of el.ratingStars) {
+    const input = star.querySelector("input");
+    star.classList.toggle("active", Number(input?.value || 0) <= rating);
+  }
+}
+
+async function submitRatingFeedback(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+  const selectedRating = formData.get("rating");
+  const hasConsent = formData.get("consent") === "yes";
+
+  if (!selectedRating || !hasConsent) {
+    form.reportValidity();
+    return;
+  }
+
+  if (el.ratingStatus) {
+    el.ratingStatus.textContent = "";
+    el.ratingStatus.className = "rating-status";
+  }
+
+  try {
+    const body = new URLSearchParams(formData).toString();
+    const response = await fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body,
+    });
+    if (!response.ok) throw new Error("Unable to submit rating");
+    form.reset();
+    updateRatingStars(0);
+    if (el.ratingStatus) {
+      el.ratingStatus.textContent = "Thank you. Your rating has been submitted.";
+      el.ratingStatus.classList.add("success");
+    }
+  } catch {
+    if (el.ratingStatus) {
+      el.ratingStatus.textContent = "Unable to submit rating. Please try again.";
+      el.ratingStatus.classList.add("error");
+    }
+  }
+}
+
 async function init() {
   try {
     const response = await fetch("data/diagnoses.json");
@@ -297,6 +347,13 @@ el.print.addEventListener("click", () => {
   renderPrintArea();
   window.print();
 });
+
+for (const star of el.ratingStars) {
+  const input = star.querySelector("input");
+  input?.addEventListener("change", () => updateRatingStars(input.value));
+}
+
+el.ratingForm?.addEventListener("submit", submitRatingFeedback);
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

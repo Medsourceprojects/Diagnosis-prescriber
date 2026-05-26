@@ -66,7 +66,7 @@ await rm(dist, { recursive: true, force: true });
 await mkdir(path.join(dist, "data"), { recursive: true });
 await mkdir(path.join(dist, "icons"), { recursive: true });
 
-for (const file of ["index.html", "styles.css", "app.js", "README.md", "manifest.json", "service-worker.js", "favicon.png"]) {
+for (const file of ["index.html", "styles.css", "app.js", "README.md", "manifest.json", "service-worker.js", "favicon.ico", "favicon.png"]) {
   if (existsSync(path.join(root, file))) {
     await cp(path.join(root, file), path.join(dist, file));
   }

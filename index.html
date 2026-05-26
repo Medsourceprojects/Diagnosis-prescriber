@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diagnosis Prescriber</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">Rx</div>
+          <div>
+            <h1>Diagnosis Prescriber</h1>
+          </div>
+        </div>
+
+        <label class="field-label" for="searchInput">Search diagnosis</label>
+        <input id="searchInput" class="search-input" type="search" placeholder="Try asth, diab, appen..." autocomplete="off" />
+
+        <label class="field-label" for="diagnosisSelect">Diagnosis dropdown</label>
+        <select id="diagnosisSelect" class="diagnosis-select"></select>
+
+        <div class="filter-row" id="categoryFilters"></div>
+
+        <div class="list-head">
+          <strong id="resultCount">Loading...</strong>
+          <span>alphabetical</span>
+        </div>
+        <div class="diagnosis-list" id="diagnosisList" aria-live="polite"></div>
+      </aside>
+
+      <section class="detail-pane">
+        <div id="emptyState" class="empty-state">
+          <div class="empty-icon">+</div>
+          <h2>Select a diagnosis</h2>
+          <p>Search or choose from the dropdown to view essentials, management and prescription.</p>
+        </div>
+
+        <article id="detailCard" class="detail-card hidden">
+          <header class="detail-header">
+            <div>
+              <span id="categoryBadge" class="badge">Category</span>
+              <h2 id="diagnosisTitle"></h2>
+            </div>
+          </header>
+
+          <div id="alerts" class="alerts"></div>
+
+          <div class="content-grid">
+            <section class="info-section accent-blue">
+              <h3>Essentials of Diagnosis</h3>
+              <ul id="essentialsList"></ul>
+            </section>
+
+            <section class="info-section accent-green">
+              <h3>Treatment / Management</h3>
+              <ul id="treatmentList"></ul>
+            </section>
+          </div>
+
+          <section class="prescription-panel">
+            <div class="panel-title">
+              <div>
+                <h3>Prescription</h3>
+                <p class="reference-note">Doctor reference only — edit and verify before use.</p>
+              </div>
+              <button id="editRxBtn" class="secondary-btn" type="button">Edit Prescription</button>
+            </div>
+            <div id="prescriptionDisplay" class="prescription-display"></div>
+            <textarea id="prescriptionText" class="is-hidden" spellcheck="false"></textarea>
+            <div class="action-row">
+              <button id="copyBtn" type="button">Copy Prescription</button>
+              <button id="printBtn" type="button">Print Prescription</button>
+            </div>
+          </section>
+        </article>
+      </section>
+    </main>
+
+    <section id="printArea" class="print-area"></section>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

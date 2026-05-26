@@ -92,6 +92,17 @@
       </section>
     </main>
 
+    <form name="rating-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="rating-feedback" />
+      <input name="bot-field" />
+      <input type="number" name="rating" />
+      <input type="text" name="profession" />
+      <input type="text" name="feedbackType" />
+      <textarea name="message"></textarea>
+      <input type="email" name="email" />
+      <input type="checkbox" name="consent" />
+    </form>
+
     <section class="rating-section" aria-labelledby="ratingTitle">
       <div class="rating-card">
         <div class="rating-intro">
@@ -102,7 +113,7 @@
           <p class="rating-helper">Private feedback goes to the publisher/admin only. Individual messages are not shown publicly.</p>
         </div>
 
-        <form id="ratingFeedbackForm" name="rating-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
+        <form id="ratingFeedbackForm" name="rating-feedback" method="POST" action="/">
           <input type="hidden" name="form-name" value="rating-feedback" />
           <p hidden>
             <label>Don’t fill this out: <input name="bot-field" /></label>
@@ -147,7 +158,7 @@
             </label>
             <label>
               <span>Feedback type</span>
-              <select name="feedback_type">
+              <select name="feedbackType">
                 <option value="">Optional</option>
                 <option>Correction needed</option>
                 <option>Missing diagnosis</option>

@@ -259,11 +259,15 @@ async function submitRatingFeedback(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const formData = new FormData(form);
-  const selectedRating = formData.get("rating");
+  const selectedRating = String(formData.get("rating") || "");
   const hasConsent = formData.get("consent") === "yes";
+  const ratingValue = Number(selectedRating);
 
-  if (!selectedRating || !hasConsent) {
-    form.reportValidity();
+  if (!Number.isInteger(ratingValue) || ratingValue < 1 || ratingValue > 5 || !hasConsent) {
+    if (el.ratingStatus) {
+      el.ratingStatus.textContent = "Please select a rating and confirm consent.";
+      el.ratingStatus.className = "rating-status error";
+    }
     return;
   }
 
@@ -273,7 +277,16 @@ async function submitRatingFeedback(event) {
   }
 
   try {
-    const body = new URLSearchParams(formData).toString();
+    const body = new URLSearchParams({
+      "form-name": "rating-feedback",
+      rating: selectedRating,
+      profession: String(formData.get("profession") || ""),
+      feedbackType: String(formData.get("feedbackType") || ""),
+      message: String(formData.get("message") || ""),
+      email: String(formData.get("email") || ""),
+      consent: hasConsent ? "yes" : "no",
+      "bot-field": "",
+    }).toString();
     const response = await fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },

@@ -40,9 +40,12 @@ const el = {
   editRx: document.querySelector("#editRxBtn"),
   copy: document.querySelector("#copyBtn"),
   print: document.querySelector("#printBtn"),
+  install: document.querySelector("#installAppBtn"),
   printArea: document.querySelector("#printArea"),
   toast: document.querySelector("#toast"),
 };
+
+let deferredInstallPrompt = null;
 
 function normalize(value) {
   return (value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
@@ -293,6 +296,31 @@ el.print.addEventListener("click", () => {
   el.rxDisplay.textContent = text;
   renderPrintArea();
   window.print();
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(console.error);
+  });
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  el.install?.classList.remove("hidden");
+});
+
+el.install?.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  el.install.classList.add("hidden");
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  el.install?.classList.add("hidden");
 });
 
 init();

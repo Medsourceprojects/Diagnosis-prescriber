@@ -22,6 +22,20 @@ Open `http://127.0.0.1:4173`.
 
 The app reads `data/diagnoses.json`, which is limited to short summarized clinical points for hosting safety.
 
+## Install
+
+Desktop install:
+Open the Netlify URL in Chrome or Edge.
+Click the install icon in the address bar, or browser menu -> Cast, save, and share -> Install page as app.
+
+Android install:
+Open the Netlify URL in Chrome.
+Tap menu ⋮ -> Add to Home screen / Install app.
+
+iPhone install:
+Open the Netlify URL in Safari.
+Tap Share -> Add to Home Screen.
+
 Checked starter diagnoses:
 
 - Achalasia Cardia

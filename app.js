@@ -249,7 +249,6 @@ async function init() {
     state.filtered = state.diagnoses;
     renderFilters();
     renderList();
-    selectDiagnosis("Bronchial Asthma");
   } catch (error) {
     el.count.textContent = "Data error";
     el.list.innerHTML = `<div class="alert red">${error.message}</div>`;

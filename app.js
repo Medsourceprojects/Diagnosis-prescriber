@@ -5,7 +5,6 @@ const state = {
   category: "All",
   query: "",
   editingPrescription: false,
-  recent: [],
   currentView: "landingView",
   theme: "light"
 };
@@ -44,10 +43,6 @@ const el = {
   count: document.querySelector("#resultCount"),
   filters: document.querySelector("#categoryFilters"),
   
-  // Recent
-  recentContainer: document.querySelector("#recentContainer"),
-  recentList: document.querySelector("#recentList"),
-
   // Details
   empty: document.querySelector("#emptyState"),
   card: document.querySelector("#detailCard"),
@@ -152,41 +147,6 @@ el.themeToggle?.addEventListener("click", () => {
 });
 
 
-// -- Recent Logic --
-function loadRecent() {
-  try {
-    const saved = localStorage.getItem("dx_recent");
-    if (saved) state.recent = JSON.parse(saved);
-  } catch (e) {}
-}
-
-function saveRecent(diagnosis) {
-  state.recent = state.recent.filter(item => item.id !== diagnosis.id);
-  state.recent.unshift({ id: diagnosis.id, diagnosis: diagnosis.diagnosis, category: diagnosis.category });
-  if (state.recent.length > 6) state.recent.pop();
-  try {
-    localStorage.setItem("dx_recent", JSON.stringify(state.recent));
-  } catch (e) {}
-  renderRecent();
-}
-
-function renderRecent() {
-  if (state.recent.length === 0 || state.query !== "" || state.category !== "All") {
-    el.recentContainer.classList.add("hidden");
-    return;
-  }
-  el.recentContainer.classList.remove("hidden");
-  el.recentList.innerHTML = "";
-  for (const item of state.recent) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = `diagnosis-item${state.selected?.id === item.id ? " active" : ""}`;
-    button.innerHTML = `<span>${item.diagnosis}</span><span class="mini-badge">${item.category}</span>`;
-    button.addEventListener("click", () => selectDiagnosis(item.id));
-    el.recentList.append(button);
-  }
-}
-
 // -- Search & List Logic --
 function normalize(value) {
   return (value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
@@ -286,7 +246,6 @@ function renderFilters() {
       state.category = category;
       renderFilters();
       renderList();
-      renderRecent();
     });
     el.filters.append(button);
   }
@@ -356,7 +315,6 @@ function selectDiagnosis(key) {
   state.selected = diagnosis;
   el.select.value = diagnosis.id;
   
-  saveRecent(diagnosis);
   renderList();
   renderDetail(diagnosis);
   
@@ -466,9 +424,7 @@ async function init() {
     if (!response.ok) throw new Error("Unable to load diagnosis data");
     state.diagnoses = await response.json();
     state.filtered = state.diagnoses;
-    loadRecent();
     renderFilters();
-    renderRecent();
     renderList();
     switchView("landingView");
   } catch (error) {
@@ -480,14 +436,12 @@ async function init() {
 el.search.addEventListener("input", (event) => {
   state.query = event.target.value;
   renderList();
-  renderRecent();
 });
 
 el.clearSearch.addEventListener("click", () => {
   el.search.value = "";
   state.query = "";
   renderList();
-  renderRecent();
 });
 
 el.select.addEventListener("change", (event) => selectDiagnosis(event.target.value));

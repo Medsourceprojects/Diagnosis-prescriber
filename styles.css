@@ -31,9 +31,9 @@
   --danger: var(--red);
   --shadow: var(--card-shadow);
 
-  --theme-toggle-bg: rgba(15, 23, 42, 0.05);
-  --theme-toggle-border: rgba(15, 23, 42, 0.08);
-  --theme-toggle-hover: rgba(15, 23, 42, 0.1);
+  --theme-toggle-bg: #eff6ff;
+  --theme-toggle-border: #93c5fd;
+  --theme-toggle-hover: #dbeafe;
   
   --input-bg: #ffffff;
   --glass-blur: 12px;
@@ -107,9 +107,9 @@
   --danger: var(--red);
   --shadow: var(--card-shadow);
 
-  --theme-toggle-bg: rgba(255, 255, 255, 0.08);
-  --theme-toggle-border: rgba(255, 255, 255, 0.15);
-  --theme-toggle-hover: rgba(255, 255, 255, 0.15);
+  --theme-toggle-bg: rgba(37, 99, 235, 0.22);
+  --theme-toggle-border: rgba(96, 165, 250, 0.46);
+  --theme-toggle-hover: rgba(37, 99, 235, 0.32);
   
   --input-bg: rgba(30, 41, 59, 0.7);
   
@@ -226,6 +226,7 @@ button, input, select, textarea { font: inherit; }
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
 }
 .nav-links {
   display: flex;
@@ -260,11 +261,15 @@ button, input, select, textarea { font: inherit; }
   border: 1px solid var(--theme-toggle-border);
   border-radius: 999px;
   min-height: 36px;
+  min-width: 82px;
   padding: 0 12px;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.85rem;
+  box-shadow: var(--shadow-sm);
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 110;
 }
 .theme-toggle-btn:hover {
   background: var(--theme-toggle-hover);
@@ -282,6 +287,7 @@ textarea:focus-visible {
 }
 .theme-toggle-btn svg {
   display: block;
+  flex-shrink: 0;
   stroke: var(--ink);
 }
 /* By default, let js display inline-block, but we can set defaults */
@@ -525,10 +531,6 @@ html:not([data-theme="dark"]) .theme-icon-moon { display: inline-block; }
   color: var(--muted);
   margin: 8px 0;
 }
-.separator-head {
-  margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;
-}
-
 .diagnosis-list {
   flex: 1;
   overflow-y: auto;
@@ -537,11 +539,6 @@ html:not([data-theme="dark"]) .theme-icon-moon { display: inline-block; }
   gap: 8px;
   margin: 0 -12px;
   padding: 0 12px 16px;
-}
-.recent-list {
-  flex: none;
-  max-height: 180px;
-  padding-bottom: 0;
 }
 
 .diagnosis-item {
@@ -848,12 +845,14 @@ body, .top-nav, .bottom-nav, .feature-card, .sidebar, .detail-pane, .info-sectio
     display: none;
   }
   .theme-toggle-btn {
-    min-width: 42px;
-    padding: 0;
+    min-width: 76px;
+    padding: 0 10px;
     justify-content: center;
+    gap: 6px;
+    font-size: 0.8rem;
   }
   .theme-toggle-btn span {
-    display: none;
+    display: inline;
   }
   .hero-content h1 {
     font-size: 2.25rem;

@@ -6,7 +6,8 @@ const state = {
   query: "",
   editingPrescription: false,
   recent: [],
-  currentView: "landingView"
+  currentView: "landingView",
+  theme: "light"
 };
 
 const emergencyOnly = new Set([
@@ -30,6 +31,7 @@ const el = {
   views: document.querySelectorAll(".view-section"),
   appShell: document.querySelector(".app-shell"),
   mobileBackBtn: document.querySelector("#mobileBackBtn"),
+  themeToggle: document.querySelector("#themeToggleBtn"),
   
   // Landing
   heroExploreBtn: document.querySelector("#heroExploreBtn"),
@@ -107,6 +109,46 @@ el.heroExploreBtn?.addEventListener("click", () => switchView("exploreView"));
 
 el.mobileBackBtn?.addEventListener("click", () => {
   el.appShell.classList.remove("show-detail");
+});
+
+
+// -- Theme Logic --
+function setTheme(theme) {
+  state.theme = theme;
+  document.documentElement.dataset.theme = theme;
+  try {
+    localStorage.setItem("dx_theme", theme);
+  } catch (error) {}
+  
+  const sunIcon = document.querySelector(".theme-icon-sun");
+  const moonIcon = document.querySelector(".theme-icon-moon");
+  const textSpan = document.querySelector("#themeToggleText");
+  
+  if (theme === "dark") {
+    if (sunIcon) sunIcon.style.display = "inline-block";
+    if (moonIcon) moonIcon.style.display = "none";
+    if (textSpan) textSpan.textContent = "Light";
+  } else {
+    if (sunIcon) sunIcon.style.display = "none";
+    if (moonIcon) moonIcon.style.display = "inline-block";
+    if (textSpan) textSpan.textContent = "Dark";
+  }
+}
+
+function initTheme() {
+  let savedTheme = null;
+  try {
+    savedTheme = localStorage.getItem("dx_theme");
+  } catch (error) {}
+  const systemPref = window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
+  setTheme(savedTheme || systemPref);
+}
+
+initTheme();
+
+el.themeToggle?.addEventListener("click", () => {
+  const nextTheme = state.theme === "dark" ? "light" : "dark";
+  setTheme(nextTheme);
 });
 
 

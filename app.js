@@ -5,6 +5,8 @@ const state = {
   category: "All",
   query: "",
   editingPrescription: false,
+  recent: [],
+  currentView: "landingView"
 };
 
 const emergencyOnly = new Set([
@@ -23,11 +25,28 @@ const emergencyOnly = new Set([
 ]);
 
 const el = {
+  // Navigation
+  navBtns: document.querySelectorAll(".nav-btn"),
+  views: document.querySelectorAll(".view-section"),
+  appShell: document.querySelector(".app-shell"),
+  mobileBackBtn: document.querySelector("#mobileBackBtn"),
+  
+  // Landing
+  heroExploreBtn: document.querySelector("#heroExploreBtn"),
+
+  // Search/Filter
   search: document.querySelector("#searchInput"),
+  clearSearch: document.querySelector("#clearSearchBtn"),
   select: document.querySelector("#diagnosisSelect"),
   list: document.querySelector("#diagnosisList"),
   count: document.querySelector("#resultCount"),
   filters: document.querySelector("#categoryFilters"),
+  
+  // Recent
+  recentContainer: document.querySelector("#recentContainer"),
+  recentList: document.querySelector("#recentList"),
+
+  // Details
   empty: document.querySelector("#emptyState"),
   card: document.querySelector("#detailCard"),
   title: document.querySelector("#diagnosisTitle"),
@@ -40,6 +59,8 @@ const el = {
   editRx: document.querySelector("#editRxBtn"),
   copy: document.querySelector("#copyBtn"),
   print: document.querySelector("#printBtn"),
+  
+  // Other
   install: document.querySelector("#installAppBtn"),
   ratingForm: document.querySelector("#ratingFeedbackForm"),
   ratingStatus: document.querySelector("#ratingStatus"),
@@ -50,6 +71,81 @@ const el = {
 
 let deferredInstallPrompt = null;
 
+// -- Navigation Logic --
+function switchView(viewId) {
+  state.currentView = viewId;
+  el.views.forEach(v => {
+    if (v.id === viewId) {
+      v.classList.remove("hidden");
+      v.classList.add("is-active");
+    } else {
+      v.classList.remove("is-active");
+      v.classList.add("hidden");
+    }
+  });
+  
+  el.navBtns.forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.view === viewId);
+  });
+
+  if (viewId !== "exploreView") {
+    el.appShell.classList.remove("show-detail");
+  } else {
+    // If we just clicked explore but haven't selected anything, ensure we show list
+    if (!state.selected) {
+      el.appShell.classList.remove("show-detail");
+    }
+  }
+  window.scrollTo(0,0);
+}
+
+el.navBtns.forEach(btn => {
+  btn.addEventListener("click", () => switchView(btn.dataset.view));
+});
+
+el.heroExploreBtn?.addEventListener("click", () => switchView("exploreView"));
+
+el.mobileBackBtn?.addEventListener("click", () => {
+  el.appShell.classList.remove("show-detail");
+});
+
+
+// -- Recent Logic --
+function loadRecent() {
+  try {
+    const saved = localStorage.getItem("dx_recent");
+    if (saved) state.recent = JSON.parse(saved);
+  } catch (e) {}
+}
+
+function saveRecent(diagnosis) {
+  state.recent = state.recent.filter(item => item.id !== diagnosis.id);
+  state.recent.unshift({ id: diagnosis.id, diagnosis: diagnosis.diagnosis, category: diagnosis.category });
+  if (state.recent.length > 6) state.recent.pop();
+  try {
+    localStorage.setItem("dx_recent", JSON.stringify(state.recent));
+  } catch (e) {}
+  renderRecent();
+}
+
+function renderRecent() {
+  if (state.recent.length === 0 || state.query !== "" || state.category !== "All") {
+    el.recentContainer.classList.add("hidden");
+    return;
+  }
+  el.recentContainer.classList.remove("hidden");
+  el.recentList.innerHTML = "";
+  for (const item of state.recent) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `diagnosis-item${state.selected?.id === item.id ? " active" : ""}`;
+    button.innerHTML = `<span>${item.diagnosis}</span><span class="mini-badge">${item.category}</span>`;
+    button.addEventListener("click", () => selectDiagnosis(item.id));
+    el.recentList.append(button);
+  }
+}
+
+// -- Search & List Logic --
 function normalize(value) {
   return (value || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
@@ -98,6 +194,12 @@ function renderList() {
   el.count.textContent = `${state.filtered.length} diagnoses`;
   el.list.innerHTML = "";
   el.select.innerHTML = "";
+  
+  if (query) {
+    el.clearSearch.classList.remove("hidden");
+  } else {
+    el.clearSearch.classList.add("hidden");
+  }
 
   if (!state.filtered.length) {
     el.list.innerHTML = `<div class="alert amber">No diagnosis found. Try a shorter spelling fragment.</div>`;
@@ -142,6 +244,7 @@ function renderFilters() {
       state.category = category;
       renderFilters();
       renderList();
+      renderRecent();
     });
     el.filters.append(button);
   }
@@ -210,8 +313,16 @@ function selectDiagnosis(key) {
   if (!diagnosis) return;
   state.selected = diagnosis;
   el.select.value = diagnosis.id;
+  
+  saveRecent(diagnosis);
   renderList();
   renderDetail(diagnosis);
+  
+  // Mobile layout view toggle
+  el.appShell.classList.add("show-detail");
+  
+  // Smooth scroll to top of details area
+  document.querySelector(".detail-pane")?.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function renderPrintArea() {
@@ -313,8 +424,11 @@ async function init() {
     if (!response.ok) throw new Error("Unable to load diagnosis data");
     state.diagnoses = await response.json();
     state.filtered = state.diagnoses;
+    loadRecent();
     renderFilters();
+    renderRecent();
     renderList();
+    switchView("landingView");
   } catch (error) {
     el.count.textContent = "Data error";
     el.list.innerHTML = `<div class="alert red">${error.message}</div>`;
@@ -324,18 +438,29 @@ async function init() {
 el.search.addEventListener("input", (event) => {
   state.query = event.target.value;
   renderList();
+  renderRecent();
+});
+
+el.clearSearch.addEventListener("click", () => {
+  el.search.value = "";
+  state.query = "";
+  renderList();
+  renderRecent();
 });
 
 el.select.addEventListener("change", (event) => selectDiagnosis(event.target.value));
+
 el.editRx.addEventListener("click", () => {
   state.editingPrescription = !state.editingPrescription;
   renderPrescription(el.rx.value);
 });
+
 el.rx.addEventListener("input", () => {
   if (state.editingPrescription) {
     el.rxDisplay.textContent = cleanPrescription(el.rx.value);
   }
 });
+
 el.copy.addEventListener("click", async () => {
   const text = currentPrescription();
   try {
@@ -353,6 +478,7 @@ el.copy.addEventListener("click", async () => {
   }
   showToast("Prescription copied");
 });
+
 el.print.addEventListener("click", () => {
   const text = currentPrescription();
   el.rx.value = text;
@@ -377,20 +503,26 @@ if ("serviceWorker" in navigator) {
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault();
   deferredInstallPrompt = event;
-  el.install?.classList.remove("hidden");
+  if (el.install) {
+    el.install.classList.remove("hidden");
+    // Also show install button in top-nav if we had one
+    document.querySelectorAll("#installAppBtn").forEach(btn => btn.classList.remove("hidden"));
+  }
 });
 
-el.install?.addEventListener("click", async () => {
-  if (!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-  el.install.classList.add("hidden");
+document.querySelectorAll("#installAppBtn").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    document.querySelectorAll("#installAppBtn").forEach(b => b.classList.add("hidden"));
+  });
 });
 
 window.addEventListener("appinstalled", () => {
   deferredInstallPrompt = null;
-  el.install?.classList.add("hidden");
+  document.querySelectorAll("#installAppBtn").forEach(btn => btn.classList.add("hidden"));
 });
 
 init();

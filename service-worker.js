@@ -1,4 +1,4 @@
-const CACHE_NAME = "diagnosis-prescriber-v7";
+const CACHE_NAME = "diagnosis-prescriber-v8";
 const APP_SHELL = [
   "/",
   "/index.html",

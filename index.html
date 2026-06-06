@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Diagnosis Prescriber</title>
-    <link rel="icon" href="/favicon.ico?v=6" sizes="any" />
-    <link rel="icon" type="image/png" href="/favicon.png?v=6" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6" />
+    <link rel="icon" href="/favicon.ico?v=8" sizes="any" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=8" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=8" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#2563eb" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -16,205 +16,285 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <aside class="sidebar">
-        <div class="brand">
-          <div class="brand-mark">Rx</div>
-          <div>
-            <h1>Diagnosis Prescriber</h1>
-            <p>Medsourceprojects</p>
+    <nav class="top-nav">
+      <div class="nav-brand">
+         <div class="brand-mark">Rx</div>
+         <div>
+           <strong>Diagnosis Prescriber</strong>
+           <span>Medsourceprojects</span>
+         </div>
+      </div>
+      <div class="nav-links">
+         <button class="nav-btn active" data-view="landingView">Home</button>
+         <button class="nav-btn" data-view="exploreView">Explore</button>
+         <button class="nav-btn" data-view="footerView">About</button>
+      </div>
+    </nav>
+
+    <main id="landingView" class="view-section is-active">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-icon">Rx</div>
+          <h1>Quick Clinical Reference for Diagnosis & Treatment</h1>
+          <p class="hero-subtitle">Search diagnosis essentials, treatment/management points, and editable prescription references in a clean mobile-friendly app.</p>
+          <div class="hero-ctas">
+            <button id="heroExploreBtn" class="primary-btn">Explore Diagnoses</button>
+            <button id="installAppBtn" class="secondary-btn hidden" type="button">Install App</button>
+          </div>
+          <p class="hero-safety">Educational and doctor-reference use only. Verify clinically before use.</p>
+        </div>
+        <div class="feature-grid-home">
+          <div class="feature-card">
+             <h3>Diagnosis Search</h3>
+             <p>Quickly find medical conditions with alphabetical search and category filters.</p>
+          </div>
+          <div class="feature-card">
+             <h3>Treatment Points</h3>
+             <p>Concise essentials of diagnosis and immediate management steps.</p>
+          </div>
+          <div class="feature-card">
+             <h3>Prescription Reference</h3>
+             <p>Editable medication references that can be copied or printed cleanly.</p>
+          </div>
+          <div class="feature-card">
+             <h3>Mobile & Desktop</h3>
+             <p>Fully responsive offline-capable PWA for any device.</p>
           </div>
         </div>
-
-        <label class="field-label" for="searchInput">Search diagnosis</label>
-        <input id="searchInput" class="search-input" type="search" placeholder="Try asth, diab, appen..." autocomplete="off" />
-
-        <label class="field-label" for="diagnosisSelect">Diagnosis dropdown</label>
-        <select id="diagnosisSelect" class="diagnosis-select"></select>
-
-        <div class="filter-row" id="categoryFilters"></div>
-
-        <div class="list-head">
-          <strong id="resultCount">Loading...</strong>
-          <span>alphabetical</span>
-        </div>
-        <div class="diagnosis-list" id="diagnosisList" aria-live="polite"></div>
-      </aside>
-
-      <section class="detail-pane">
-        <div id="emptyState" class="empty-state">
-          <div class="welcome-card">
-            <div class="empty-icon">Rx</div>
-            <h2>Diagnosis Prescriber</h2>
-            <p class="welcome-subtitle">Search or select a diagnosis to view essentials of diagnosis, treatment/management, and editable prescription reference.</p>
-            <p class="welcome-note">For doctors and medical learners — concise clinical reference, not a substitute for clinical judgement.</p>
-          </div>
-        </div>
-
-        <article id="detailCard" class="detail-card hidden">
-          <header class="detail-header">
-            <div>
-              <span id="categoryBadge" class="badge">Category</span>
-              <h2 id="diagnosisTitle"></h2>
-            </div>
-          </header>
-
-          <div id="alerts" class="alerts"></div>
-
-          <div class="content-grid">
-            <section class="info-section accent-blue">
-              <h3>Essentials of Diagnosis</h3>
-              <ul id="essentialsList"></ul>
-            </section>
-
-            <section class="info-section accent-green">
-              <h3>Treatment / Management</h3>
-              <ul id="treatmentList"></ul>
-            </section>
-          </div>
-
-          <section class="prescription-panel">
-            <div class="panel-title">
-              <div>
-                <h3>Prescription</h3>
-                <p class="reference-note">Doctor reference only — edit and verify before use.</p>
-              </div>
-              <button id="editRxBtn" class="secondary-btn" type="button">Edit Prescription</button>
-            </div>
-            <div id="prescriptionDisplay" class="prescription-display"></div>
-            <textarea id="prescriptionText" class="is-hidden" spellcheck="false"></textarea>
-            <div class="action-row">
-              <button id="copyBtn" type="button">Copy Prescription</button>
-              <button id="printBtn" type="button">Print Prescription</button>
-            </div>
-          </section>
-        </article>
-      </section>
+      </div>
     </main>
 
-    <form name="rating-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
-      <input type="hidden" name="form-name" value="rating-feedback" />
-      <input name="bot-field" />
-      <input type="number" name="rating" />
-      <input type="text" name="profession" />
-      <input type="text" name="feedbackType" />
-      <textarea name="message"></textarea>
-      <input type="email" name="email" />
-      <input type="checkbox" name="consent" />
-    </form>
-
-    <section class="rating-section" aria-labelledby="ratingTitle">
-      <div class="rating-card">
-        <div class="rating-intro">
-          <div>
-            <h2 id="ratingTitle">Rate this app</h2>
-            <p class="rating-stars-display" aria-hidden="true">★★★★★</p>
+    <main id="exploreView" class="view-section hidden">
+      <div class="app-shell">
+        <aside class="sidebar">
+          <label class="field-label" for="searchInput">Search diagnosis</label>
+          <div class="search-wrap">
+            <input id="searchInput" class="search-input" type="search" placeholder="Try asth, diab, appen..." autocomplete="off" />
+            <button id="clearSearchBtn" class="clear-btn hidden" type="button" aria-label="Clear search">×</button>
           </div>
-          <p class="rating-helper">Private feedback goes to the publisher/admin only. Individual messages are not shown publicly.</p>
+
+          <label class="field-label" for="diagnosisSelect">Diagnosis dropdown</label>
+          <select id="diagnosisSelect" class="diagnosis-select"></select>
+
+          <div class="filter-row" id="categoryFilters"></div>
+
+          <div class="list-head">
+            <strong id="resultCount">Loading...</strong>
+            <span>alphabetical</span>
+          </div>
+
+          <div id="recentContainer" class="hidden">
+            <div class="list-head"><strong class="recent-heading">Recently Viewed</strong></div>
+            <div class="diagnosis-list recent-list" id="recentList"></div>
+            <div class="list-head separator-head"><strong class="recent-heading">All Results</strong></div>
+          </div>
+
+          <div class="diagnosis-list" id="diagnosisList" aria-live="polite"></div>
+        </aside>
+
+        <section class="detail-pane" id="detailPaneContainer">
+          <div id="emptyState" class="empty-state">
+            <div class="welcome-card">
+              <div class="empty-icon">Rx</div>
+              <h2>Diagnosis Details</h2>
+              <p class="welcome-subtitle">Select a diagnosis from the left to view essentials, treatment, and editable prescriptions.</p>
+            </div>
+          </div>
+
+          <article id="detailCard" class="detail-card hidden">
+            <button id="mobileBackBtn" class="mobile-back-btn" type="button">← Back to search</button>
+            <header class="detail-header">
+              <div>
+                <span id="categoryBadge" class="badge">Category</span>
+                <h2 id="diagnosisTitle"></h2>
+              </div>
+            </header>
+
+            <div id="alerts" class="alerts"></div>
+
+            <div class="content-grid">
+              <section class="info-section accent-blue">
+                <h3>Essentials of Diagnosis</h3>
+                <ul id="essentialsList"></ul>
+              </section>
+
+              <section class="info-section accent-green">
+                <h3>Treatment / Management</h3>
+                <ul id="treatmentList"></ul>
+              </section>
+            </div>
+
+            <section class="prescription-panel">
+              <div class="panel-title">
+                <div>
+                  <h3>Prescription</h3>
+                  <p class="reference-note">Doctor reference only — edit and verify before use.</p>
+                </div>
+                <button id="editRxBtn" class="secondary-btn" type="button">Edit Prescription</button>
+              </div>
+              <div id="prescriptionDisplay" class="prescription-display"></div>
+              <textarea id="prescriptionText" class="is-hidden" spellcheck="false"></textarea>
+              <div class="action-row">
+                <button id="copyBtn" type="button">Copy Prescription</button>
+                <button id="printBtn" type="button">Print Prescription</button>
+              </div>
+            </section>
+          </article>
+        </section>
+      </div>
+    </main>
+
+    <main id="footerView" class="view-section hidden">
+      <form name="rating-feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+        <input type="hidden" name="form-name" value="rating-feedback" />
+        <input name="bot-field" />
+        <input type="number" name="rating" />
+        <input type="text" name="profession" />
+        <input type="text" name="feedbackType" />
+        <textarea name="message"></textarea>
+        <input type="email" name="email" />
+        <input type="checkbox" name="consent" />
+      </form>
+
+      <section class="rating-section" aria-labelledby="ratingTitle">
+        <div class="rating-card">
+          <div class="rating-intro">
+            <div>
+              <h2 id="ratingTitle">Rate this app</h2>
+              <p class="rating-stars-display" aria-hidden="true">★★★★★</p>
+            </div>
+            <p class="rating-helper">Private feedback goes to the publisher/admin only. Individual messages are not shown publicly.</p>
+          </div>
+
+          <form id="ratingFeedbackForm" name="rating-feedback" method="POST" action="/">
+            <input type="hidden" name="form-name" value="rating-feedback" />
+            <p hidden>
+              <label>Don’t fill this out: <input name="bot-field" /></label>
+            </p>
+
+            <fieldset class="rating-stars" aria-label="Star rating">
+              <legend>Star rating</legend>
+              <label class="star-option">
+                <input type="radio" name="rating" value="1" required />
+                <span>★</span>
+              </label>
+              <label class="star-option">
+                <input type="radio" name="rating" value="2" />
+                <span>★</span>
+              </label>
+              <label class="star-option">
+                <input type="radio" name="rating" value="3" />
+                <span>★</span>
+              </label>
+              <label class="star-option">
+                <input type="radio" name="rating" value="4" />
+                <span>★</span>
+              </label>
+              <label class="star-option">
+                <input type="radio" name="rating" value="5" />
+                <span>★</span>
+              </label>
+            </fieldset>
+
+            <div class="rating-grid">
+              <label>
+                <span>Profession</span>
+                <select name="profession">
+                  <option value="">Optional</option>
+                  <option>Doctor</option>
+                  <option>Intern</option>
+                  <option>PG / Resident</option>
+                  <option>Medical Student</option>
+                  <option>Pharmacist</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label>
+                <span>Feedback type</span>
+                <select name="feedbackType">
+                  <option value="">Optional</option>
+                  <option>Correction needed</option>
+                  <option>Missing diagnosis</option>
+                  <option>Dose/treatment issue</option>
+                  <option>Feature request</option>
+                  <option>App bug</option>
+                  <option>General feedback</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="full-field">
+              <span>Message</span>
+              <textarea name="message" rows="3" placeholder="Write optional feedback. Do not include patient-identifiable information."></textarea>
+            </label>
+
+            <label class="full-field">
+              <span>Email</span>
+              <input name="email" type="email" placeholder="Email for follow-up, optional" autocomplete="email" />
+            </label>
+
+            <label class="consent-field">
+              <input name="consent" type="checkbox" value="yes" required />
+              <span>I agree to share this feedback for app improvement and confirm I am not submitting patient-identifiable information.</span>
+            </label>
+
+            <div class="rating-actions">
+              <button type="submit" class="primary-btn">Submit Rating</button>
+              <p id="ratingStatus" class="rating-status" role="status" aria-live="polite"></p>
+            </div>
+          </form>
         </div>
+      </section>
 
-        <form id="ratingFeedbackForm" name="rating-feedback" method="POST" action="/">
-          <input type="hidden" name="form-name" value="rating-feedback" />
-          <p hidden>
-            <label>Don’t fill this out: <input name="bot-field" /></label>
-          </p>
+      <footer class="site-footer">
+        <div class="footer-grid">
+          <section>
+            <h2>About</h2>
+            <p>Diagnosis Prescriber is a concise clinical reference tool built for quick review of diagnosis essentials, treatment/management points, and editable prescription references.</p>
+          </section>
+          <section>
+            <h2>Disclaimer</h2>
+            <p>Educational and doctor-reference use only. Verify diagnosis, dose, contraindications, allergies, local protocol, and current guidelines before prescribing. Not for patient self-medication.</p>
+          </section>
+          <section>
+            <h2>Contact</h2>
+            <p>Medsourceprojects<br />Email: <a href="mailto:medsourceprojects@gmail.com">medsourceprojects@gmail.com</a></p>
+          </section>
+        </div>
+        <div class="install-row">
+          <p>Install app: Android/Chrome/Edge: use Install App or browser menu. iPhone/iPad: open in Safari → Share → Add to Home Screen.</p>
+        </div>
+        <p class="privacy-note">Feedback is used only to improve the app. Do not submit patient-identifiable information.</p>
+        <p class="copyright">© 2026 Medsourceprojects. All rights reserved.</p>
+      </footer>
+    </main>
 
-          <fieldset class="rating-stars" aria-label="Star rating">
-            <legend>Star rating</legend>
-            <label class="star-option">
-              <input type="radio" name="rating" value="1" required />
-              <span>★</span>
-            </label>
-            <label class="star-option">
-              <input type="radio" name="rating" value="2" />
-              <span>★</span>
-            </label>
-            <label class="star-option">
-              <input type="radio" name="rating" value="3" />
-              <span>★</span>
-            </label>
-            <label class="star-option">
-              <input type="radio" name="rating" value="4" />
-              <span>★</span>
-            </label>
-            <label class="star-option">
-              <input type="radio" name="rating" value="5" />
-              <span>★</span>
-            </label>
-          </fieldset>
-
-          <div class="rating-grid">
-            <label>
-              <span>Profession</span>
-              <select name="profession">
-                <option value="">Optional</option>
-                <option>Doctor</option>
-                <option>Intern</option>
-                <option>PG / Resident</option>
-                <option>Medical Student</option>
-                <option>Pharmacist</option>
-                <option>Other</option>
-              </select>
-            </label>
-            <label>
-              <span>Feedback type</span>
-              <select name="feedbackType">
-                <option value="">Optional</option>
-                <option>Correction needed</option>
-                <option>Missing diagnosis</option>
-                <option>Dose/treatment issue</option>
-                <option>Feature request</option>
-                <option>App bug</option>
-                <option>General feedback</option>
-              </select>
-            </label>
+    <nav class="bottom-nav">
+       <button class="nav-btn active" data-view="landingView">
+          <div class="nav-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
           </div>
-
-          <label class="full-field">
-            <span>Message</span>
-            <textarea name="message" rows="3" placeholder="Write optional feedback. Do not include patient-identifiable information."></textarea>
-          </label>
-
-          <label class="full-field">
-            <span>Email</span>
-            <input name="email" type="email" placeholder="Email for follow-up, optional" autocomplete="email" />
-          </label>
-
-          <label class="consent-field">
-            <input name="consent" type="checkbox" value="yes" required />
-            <span>I agree to share this feedback for app improvement and confirm I am not submitting patient-identifiable information.</span>
-          </label>
-
-          <div class="rating-actions">
-            <button type="submit">Submit Rating</button>
-            <p id="ratingStatus" class="rating-status" role="status" aria-live="polite"></p>
+          <span>Home</span>
+       </button>
+       <button class="nav-btn" data-view="exploreView">
+          <div class="nav-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </div>
-        </form>
-      </div>
-    </section>
-
-    <footer class="site-footer">
-      <div class="footer-grid">
-        <section>
-          <h2>About</h2>
-          <p>Diagnosis Prescriber is a concise clinical reference tool built for quick review of diagnosis essentials, treatment/management points, and editable prescription references.</p>
-        </section>
-        <section>
-          <h2>Disclaimer</h2>
-          <p>Educational and doctor-reference use only. Verify diagnosis, dose, contraindications, allergies, local protocol, and current guidelines before prescribing. Not for patient self-medication.</p>
-        </section>
-        <section>
-          <h2>Contact</h2>
-          <p>Medsourceprojects<br />Email: <a href="mailto:medsourceprojects@gmail.com">medsourceprojects@gmail.com</a></p>
-        </section>
-      </div>
-      <div class="install-row">
-        <button id="installAppBtn" class="install-btn hidden" type="button">Install App</button>
-        <p>Install app: Android/Chrome/Edge: use Install App or browser menu. iPhone/iPad: open in Safari → Share → Add to Home Screen.</p>
-      </div>
-      <p class="privacy-note">Feedback is used only to improve the app. Do not submit patient-identifiable information.</p>
-      <p class="copyright">© 2026 Medsourceprojects. All rights reserved.</p>
-    </footer>
+          <span>Explore</span>
+       </button>
+       <button class="nav-btn" data-view="footerView">
+          <div class="nav-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span>About</span>
+       </button>
+    </nav>
 
     <section id="printArea" class="print-area"></section>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
